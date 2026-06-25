@@ -73,9 +73,10 @@ function showResult(title, subtitle = "", isSuccess = false) {
 async function performScan() {
     if (isScanning) return;
 
-    if (ROBOFLOW_API_KEY === "YOUR_API_KEY_HERE") {
-        showResult("Setup Required", "Please enter your API Key in app.js");
-        speak("Setup Required. Please enter your API Key.");
+    // Client now calls server-side /api/infer, so no frontend API key check is needed.
+    if (!video.videoWidth || !video.videoHeight) {
+        showResult("Camera not ready", "Wait a moment and try again");
+        speak("Camera is not ready yet. Please try again.");
         return;
     }
 
