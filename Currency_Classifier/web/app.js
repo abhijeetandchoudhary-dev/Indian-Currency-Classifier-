@@ -100,9 +100,9 @@ async function performScan() {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             },
-            body: base64Image
+            body: JSON.stringify({ image: base64Image })
         });
 
         if (!response.ok) {

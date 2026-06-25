@@ -12,7 +12,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const base64Image = req.body;
+    const base64Image =
+      typeof req.body === 'string'
+        ? req.body
+        : (req.body && req.body.image) || '';
+
+    if (!base64Image) {
+      return res.status(400).json({ error: 'Missing image payload' });
+    }
+
     const roboflowUrl = `https://detect.roboflow.com/${modelId}/${version}?api_key=${apiKey}&confidence=20`;
 
     const response = await fetch(roboflowUrl, {
@@ -22,7 +30,11 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      throw new Error(`Roboflow API error: ${response.status}`);
+      const errText = await response.text();
+      return res.status(response.status).json({
+        error: `Roboflow API error: ${response.status}`,
+        details: errText
+      });
     }
 
     const data = await response.json();
