@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Currency Classifier</title>
+    <meta name="description" content="AI-powered currency scanner for the visually impaired.">
+    
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header>
+            <h1>Currency Scanner</h1>
+            <p>Point camera at currency and tap anywhere</p>
+        </header>
+        
+        <!-- Main Application Area -->
+        <main>
+            <!-- Camera Feed -->
+            <div class="video-container">
+                <video id="webcam" autoplay playsinline muted></video>
+                <div class="scanner-line hidden" id="scannerLine"></div>
+                
+                <!-- Overlay to catch clicks anywhere on the camera -->
+                <div class="click-overlay" id="clickOverlay" aria-label="Tap here to scan"></div>
+            </div>
+            
+            <!-- Result Display -->
+            <div id="resultBox" class="result-box hidden" aria-live="polite">
+                <h2 id="resultText">Scanning...</h2>
+                <p id="confidenceText" class="confidence-text"></p>
+            </div>
+
+            <!-- Massive Action Button for Accessibility -->
+            <button id="scanBtn" class="primary-btn">
+                <span>SCAN NOW</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12h20M12 2v20"/>
+                </svg>
+            </button>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
