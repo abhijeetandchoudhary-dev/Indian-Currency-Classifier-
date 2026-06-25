@@ -1,10 +1,6 @@
 // ==========================================
 // CONFIGURATION (USER MUST UPDATE THESE)
 // ==========================================
-// Replace these with your actual Roboflow details
-const ROBOFLOW_API_KEY = "gB5NEZ2WBsgiDtLSHV62";
-const ROBOFLOW_MODEL_ID = "indian-currency-notes-ecttv";
-const ROBOFLOW_VERSION = "2";
 // ==========================================
 
 // DOM Elements
@@ -96,9 +92,9 @@ async function performScan() {
         // 1. Capture the image
         const base64Image = captureFrameAsBase64();
 
-        // 2. Call Roboflow Inference API (Confidence at 20% to filter out absolute noise)
+        // 2. Call local vercel API proxy (API key is server-side) 
         // Format: https://detect.roboflow.com/[model]/[version]?api_key=[key]&confidence=20
-        const apiUrl = `https://detect.roboflow.com/${ROBOFLOW_MODEL_ID}/${ROBOFLOW_VERSION}?api_key=${ROBOFLOW_API_KEY}&confidence=20`;
+        const apiUrl = `/api/infer`;
 
         const response = await fetch(apiUrl, {
             method: "POST",
