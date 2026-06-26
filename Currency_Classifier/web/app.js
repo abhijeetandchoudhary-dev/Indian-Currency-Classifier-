@@ -6,23 +6,38 @@ const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
 const confidenceText = document.getElementById('confidenceText');
 const scannerLine = document.getElementById('scannerLine');
+const cameraBtn = document.getElementById('cameraBtn');
 
 let isScanning = false;
+let currentFacingMode = 'environment';
+let currentStream = null;
 
 // Initialize Webcam
-async function setupWebcam() {
+async function setupWebcam(facingMode = currentFacingMode) {
     try {
-        // Request rear camera preferentially on mobile
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
+
+        currentFacingMode = facingMode;
+
+        // Request rear or front camera on mobile
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' },
+            video: { facingMode },
             audio: false
         });
+        currentStream = stream;
         video.srcObject = stream;
     } catch (err) {
         console.error("Camera access denied or error:", err);
         showResult("Camera access denied", "Please enable camera permissions.");
         speak("Camera access denied. Please enable camera permissions.");
     }
+}
+
+async function toggleCamera() {
+    const nextFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+    await setupWebcam(nextFacingMode);
 }
 
 // Convert video frame to base64 string
@@ -149,6 +164,7 @@ async function performScan() {
 // Both clicking the big button OR tapping the video feed triggers the scan
 scanBtn.addEventListener('click', performScan);
 clickOverlay.addEventListener('click', performScan);
+cameraBtn.addEventListener('click', toggleCamera);
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
