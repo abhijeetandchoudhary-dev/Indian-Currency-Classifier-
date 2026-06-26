@@ -1,8 +1,3 @@
-// ==========================================
-// CONFIGURATION (USER MUST UPDATE THESE)
-// ==========================================
-// ==========================================
-
 // DOM Elements
 const video = document.getElementById('webcam');
 const clickOverlay = document.getElementById('clickOverlay');
@@ -93,8 +88,7 @@ async function performScan() {
         // 1. Capture the image
         const base64Image = captureFrameAsBase64();
 
-        // 2. Call local vercel API proxy (API key is server-side) 
-        // Format: https://detect.roboflow.com/[model]/[version]?api_key=[key]&confidence=20
+        // 2. Call local Vercel API proxy (API key is stored server-side).
         const apiUrl = `/api/infer`;
 
         const response = await fetch(apiUrl, {
