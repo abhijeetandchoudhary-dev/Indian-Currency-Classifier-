@@ -12,20 +12,27 @@ let isScanning = false;
 let currentFacingMode = 'environment';
 let currentStream = null;
 
+function stopCurrentStream() {
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+    }
+
+    if (video.srcObject) {
+        video.srcObject = null;
+    }
+}
+
 // Initialize Webcam
 async function setupWebcam(facingMode = currentFacingMode) {
     try {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-        }
-
-        currentFacingMode = facingMode;
-
         // Request rear or front camera on mobile
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode },
             audio: false
         });
+        stopCurrentStream();
+        currentFacingMode = facingMode;
         currentStream = stream;
         video.srcObject = stream;
     } catch (err) {
@@ -40,12 +47,19 @@ async function toggleCamera() {
     await setupWebcam(nextFacingMode);
 }
 
+function cleanupCamera() {
+    stopCurrentStream();
+}
+
 // Convert video frame to base64 string
 function captureFrameAsBase64() {
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        throw new Error('Canvas context unavailable');
+    }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     // Return base64 string (remove the "data:image/jpeg;base64," prefix for Roboflow)
     return canvas.toDataURL('image/jpeg').split(',')[1];
@@ -179,3 +193,6 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     document.addEventListener('click', warmUpSpeech);
 });
+
+window.addEventListener('pagehide', cleanupCamera);
+window.addEventListener('beforeunload', cleanupCamera);
