@@ -12,6 +12,12 @@ let isScanning = false;
 let currentFacingMode = 'environment';
 let currentStream = null;
 
+function setScanLoading(isLoading) {
+    isScanning = isLoading;
+    scanBtn.disabled = isLoading;
+    scanBtn.setAttribute('aria-busy', String(isLoading));
+}
+
 function stopCurrentStream() {
     if (currentStream) {
         currentStream.getTracks().forEach(track => track.stop());
@@ -26,6 +32,10 @@ function stopCurrentStream() {
 // Initialize Webcam
 async function setupWebcam(facingMode = currentFacingMode) {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('Camera not supported');
+        }
+
         // Request rear or front camera on mobile
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode },
@@ -37,8 +47,13 @@ async function setupWebcam(facingMode = currentFacingMode) {
         video.srcObject = stream;
     } catch (err) {
         console.error("Camera access denied or error:", err);
-        showResult("Camera access denied", "Please enable camera permissions.");
-        speak("Camera access denied. Please enable camera permissions.");
+        if (err && err.message === 'Camera not supported') {
+            showResult("Camera not supported", "Try a browser with camera access.");
+            speak("Camera is not supported in this browser.");
+        } else {
+            showResult("Camera access denied", "Please enable camera permissions.");
+            speak("Camera access denied. Please enable camera permissions.");
+        }
     }
 }
 
@@ -104,7 +119,7 @@ async function performScan() {
         return;
     }
 
-    isScanning = true;
+    setScanLoading(true);
 
     // UI Updates
     scannerLine.classList.remove('hidden');
@@ -166,10 +181,10 @@ async function performScan() {
 
     } catch (error) {
         console.error("Scanning Error:", error);
-        showResult("Error scanning", "Check internet or API key");
-        speak("Error scanning. Please check your internet connection.");
+        showResult("Error scanning", "Please try again.");
+        speak("Error scanning. Please try again.");
     } finally {
-        isScanning = false;
+        setScanLoading(false);
         scannerLine.classList.add('hidden');
     }
 }

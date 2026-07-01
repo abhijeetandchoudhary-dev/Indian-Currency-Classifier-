@@ -182,6 +182,13 @@ main {
     box-shadow: 0 5px 15px var(--primary-glow);
 }
 
+.primary-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Utilities */
 .hidden {
     display: none !important;
