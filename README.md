@@ -40,6 +40,13 @@ Add these in your Vercel project settings:
 - `ROBOFLOW_API_KEY`
 - `ROBOFLOW_MODEL_ID` (example: `indian-currency-notes-ecttv`)
 - `ROBOFLOW_VERSION` (example: `2`)
+- `ALLOWED_ORIGINS` (optional comma-separated list of allowed page origins)
+
+Security defaults:
+
+- The browser app uses a restrictive CSP and `Permissions-Policy` from `web/vercel.json`.
+- The inference route rejects malformed or oversized image payloads and does not return raw upstream error details.
+- Keep `ROBOFLOW_API_KEY` server-side only and never commit it.
 
 ## Deploy on Vercel
 
